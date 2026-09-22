@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>曾士宸｜聯絡我</title>
+
+    <style>
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;}
+
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #e4ecf5);
+            color: #222;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        nav {
+            width: 100%;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            margin-left: 25px;
+        }
+
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+        }
+.hero-content {
+            max-width: 700px;
+        }
+
+        .hero-content h1 {
+            font-size: 72px;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+        }
+
+        .hero-content h2 {
+            font-size: 24px;
+            font-weight: normal;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #222;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #555;
+            transform: translateY(-3px);
+        }
+
+        .about {
+            background: white;
+            padding: 80px 10%;
+            text-align: center;
+        }
+
+        .about h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .about p {
+            max-width: 700px;
+            margin: auto;
+            line-height: 2;
+            color: #555;
+            font-size: 17px;
+        }
+
+        .contact {
+            padding: 80px 10%;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .contact form {
+            max-width: 520px;
+            margin: auto;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bbb;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .contact button {
+            padding: 12px 28px;
+            border: 0;
+            border-radius: 30px;
+            background: #222;
+            color: white;
+            cursor: pointer;
+        }
+
+        footer {
+            padding: 25px;
+            background: #222;
+            color: white;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 48px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">Tseng Shih-Chen</div>
+
+            <div class="nav-links">
+                <a href="index.html#home">首頁</a>
+                <a href="index.html#about">關於我</a>
+                <a href="contact.html">聯絡我</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="contact" id="contact">
+            <h2>聯絡我</h2>
+
+            <form>
+                <div class="form-group">
+                    <label for="name">姓名：</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email：</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">留言內容：</label>
+                    <textarea id="message" name="message"></textarea>
+                </div>
+
+                <button type="submit">送出</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 曾士宸</p>
+    </footer>
+
+</body>
+</html>
