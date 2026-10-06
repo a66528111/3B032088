@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KŌHI Coffee | 線上點餐</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            background: #f7f3ed;
+            color: #40362f;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        /* ---------- 導覽列 ---------- */
+
+        header {
+            height: 70px;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e7dfd4;
+        }
+
+        .logo {
+            font-size: 24px;
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+
+        .table-number {
+            font-size: 14px;
+            color: #75685e;
+        }
+
+        .cart-button {
+            border: none;
+            background: #51443a;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 30px;
+        }
+
+        /* ---------- 首頁 ---------- */
+
+        .hero {
+            min-height: 580px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 50px 20px;
+            background:
+                linear-gradient(rgba(50,40,30,.45), rgba(50,40,30,.45)),
+                url("https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1600&q=80")
+                center/cover;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 700px;
+        }
+
+        .hero-small {
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 {
+            font-size: 60px;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .main-button {
+            border: none;
+            background: #f3eee6;
+            color: #493d34;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 16px;
+        }
+
+        /* ---------- 共用 ---------- */
+
+        section {
+            padding: 70px 8%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title span {
+            letter-spacing: 3px;
+            font-size: 12px;
+            color: #9b8979;
+        }
+
+        .section-title h2 {
+            margin-top: 8px;
+            font-size: 30px;
+        }
+
+        /* ---------- 人氣推薦 ---------- */
+
+        .recommend-grid,
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(70,55,40,.08);
+            transition: .25s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-info h3 {
+            margin-bottom: 8px;
+        }
+
+        .product-info p {
+            color: #88796e;
+            font-size: 14px;
+            min-height: 38px;
+            line-height: 1.5;
+        }
+
+        .product-bottom {
+            margin-top: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .add-button {
+            border: none;
+            background: #57483d;
+            color: white;
+            padding: 9px 16px;
+            border-radius: 20px;
+        }
+
+        /* ---------- 分類 ---------- */
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 35px;
+        }
+
+        .category-btn {
+            border: 1px solid #cbbdaf;
+            background: transparent;
+            color: #594c42;
+            padding: 9px 20px;
+            border-radius: 30px;
+        }
+
+        .category-btn.active {
+            background: #57483d;
+            color: white;
+        }
+
+        /* ---------- 彈出視窗 ---------- */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fffaf4;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .modal-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            border: none;
+            background: none;
+            font-size: 25px;
+        }
+
+        .option-group {
+            margin: 20px 0;
+        }
+
+        .option-group h4 {
+            margin-bottom: 10px;
+        }
+
+        .options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .option {
+            border: 1px solid #cfc2b6;
+            background: white;
+            padding: 8px 13px;
+            border-radius: 20px;
+        }
+
+        .option.selected {
+            background: #57483d;
+            color: white;
+        }
+
+        .modal-add {
+            width: 100%;
+            padding: 14px;
+            background: #57483d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        /* ---------- 購物車 ---------- */
+
+        .cart-panel {
+            display: none;
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            width: 420px;
+            max-width: 100%;
+            background: #fffaf4;
+            z-index: 600;
+            padding: 30px;
+            overflow-y: auto;
+            box-shadow: -5px 0 25px rgba(0,0,0,.15);
+        }
+
+        .cart-panel.show {
+            display: block;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #ddd1c5;
+            padding: 15px 0;
+        }
+
+        .cart-item-top {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cart-options {
+            color: #8d7c70;
+            font-size: 13px;
+            margin: 8px 0;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity button {
+            width: 28px;
+            height: 28px;
+            border: 1px solid #cbbdaf;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .delete {
+            border: none !important;
+            background: none !important;
+            color: #a34d45;
+            width: auto !important;
+        }
+
+        .cart-total {
+            margin-top: 25px;
+            font-size: 21px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            border: none;
+            background: #57483d;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* ---------- 結帳 ---------- */
+
+        .checkout-section,
+        .success-section {
+            display: none;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .checkout-box,
+        .success-box {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(70,55,40,.08);
+        }
+
+        .payment-option {
+            border: 1px solid #d4c7bb;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #d4c7bb;
+            border-radius: 8px;
+            resize: vertical;
+        }
+
+        .order-summary {
+            margin: 25px 0;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .success-box {
+            text-align: center;
+        }
+
+        .checkmark {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .success-detail {
+            text-align: left;
+            background: #f7f3ed;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            line-height: 2;
+        }
+
+        /* ---------- RWD ---------- */
+
+        @media(max-width: 800px) {
+            .recommend-grid,
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+        }
+
+        @media(max-width: 550px) {
+            header {
+                padding: 0 4%;
+            }
+
+            .recommend-grid,
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 35px;
+            }
+
+            section {
+                padding: 50px 5%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">KŌHI</div>
+
+    <div class="table-number">
+        TABLE <strong id="headerTable">A01</strong>
+    </div>
+
+    <button class="cart-button" onclick="openCart()">
+        購物車 (<span id="cartCount">0</span>)
+    </button>
+</header>
+
+
+<!-- 首頁 -->
+
+<div class="hero" id="home">
+
+    <div class="hero-content">
+
+        <div class="hero-small">KŌHI COFFEE</div>
+
+        <h1>KŌHI</h1>
+
+        <p>
+            一杯咖啡，一段慢下來的時間。<br>
+            歡迎來到 KŌHI Coffee。
+        </p>
+
+        <p>
+            您的桌號：<strong id="heroTable">A01</strong>
+        </p>
+
+        <button class="main-button" onclick="goMenu()">
+            開始點餐
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- 人氣推薦 -->
+
+<section id="recommend">
+
+    <div class="section-title">
+        <span>TODAY'S PICKS</span>
+        <h2>人氣推薦</h2>
+    </div>
+
+    <div class="recommend-grid" id="recommendGrid"></div>
+
+</section>
+
+
+<!-- 菜單 -->
+
+<section id="menu">
+
+    <div class="section-title">
+        <span>OUR MENU</span>
+        <h2>菜單</h2>
+    </div>
+
+    <div class="categories">
+
+        <button class="category-btn active"
+                onclick="filterMenu('全部',this)">全部</button>
+
+        <button class="category-btn"
+                onclick="filterMenu('咖啡',this)">咖啡</button>
+
+        <button class="category-btn"
+                onclick="filterMenu('非咖啡',this)">非咖啡</button>
+
+        <button class="category-btn"
+                onclick="filterMenu('茶飲',this)">茶飲</button>
+
+        <button class="category-btn"
+                onclick="filterMenu('甜點',this)">甜點</button>
+
+        <button class="category-btn"
+                onclick="filterMenu('輕食',this)">輕食</button>
+
+    </div>
+
+    <div class="menu-grid" id="menuGrid"></div>
+
+</section>
+
+
+<!-- 商品客製化 -->
+
+<div class="modal" id="productModal">
+
+    <div class="modal-content">
+
+        <div class="modal-top">
+
+            <div>
+                <h2 id="modalName"></h2>
+                <p id="modalPrice"></p>
+            </div>
+
+            <button class="close" onclick="closeModal()">×</button>
+
+        </div>
+
+        <div id="drinkOptions">
+
+            <div class="option-group">
+                <h4>杯型</h4>
+
+                <div class="options">
+                    <button class="option selected"
+                            data-group="size"
+                            data-value="中杯"
+                            data-price="0">中杯</button>
+
+                    <button class="option"
+                            data-group="size"
+                            data-value="大杯"
+                            data-price="10">大杯 +$10</button>
+                </div>
+            </div>
+
+
+            <div class="option-group">
+                <h4>溫度</h4>
+
+                <div class="options">
+                    <button class="option selected"
+                            data-group="temp"
+                            data-value="冰">冰</button>
+
+                    <button class="option"
+                            data-group="temp"
+                            data-value="熱">熱</button>
+                </div>
+            </div>
+
+
+            <div class="option-group">
+                <h4>甜度</h4>
+
+                <div class="options">
+
+                    <button class="option selected"
+                            data-group="sugar"
+                            data-value="無糖">無糖</button>
+
+                    <button class="option"
+                            data-group="sugar"
+                            data-value="微糖">微糖</button>
+
+                    <button class="option"
+                            data-group="sugar"
+                            data-value="半糖">半糖</button>
+
+                    <button class="option"
+                            data-group="sugar"
+                            data-value="正常糖">正常糖</button>
+
+                </div>
+            </div>
+
+
+            <div class="option-group">
+                <h4>冰量</h4>
+
+                <div class="options">
+
+                    <button class="option selected"
+                            data-group="ice"
+                            data-value="正常冰">正常冰</button>
+
+                    <button class="option"
+                            data-group="ice"
+                            data-value="少冰">少冰</button>
+
+                    <button class="option"
+                            data-group="ice"
+                            data-value="微冰">微冰</button>
+
+                    <button class="option"
+                            data-group="ice"
+                            data-value="去冰">去冰</button>
+
+                </div>
+            </div>
+
+
+            <div class="option-group">
+                <h4>加料</h4>
+
+                <div class="options">
+
+                    <button class="option selected"
+                            data-group="extra"
+                            data-value="無"
+                            data-price="0">無</button>
+
+                    <button class="option"
+                            data-group="extra"
+                            data-value="加一份濃縮"
+                            data-price="15">+1 Shot $15</button>
+
+                    <button class="option"
+                            data-group="extra"
+                            data-value="燕麥奶"
+                            data-price="20">燕麥奶 $20</button>
+
+                </div>
+            </div>
+
+        </div>
+
+        <button class="modal-add" onclick="addToCart()">
+            加入購物車
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- 購物車 -->
+
+<div class="cart-panel" id="cartPanel">
+
+    <div class="cart-header">
+
+        <h2>購物車</h2>
+
+        <button class="close" onclick="closeCart()">×</button>
+
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div class="cart-total">
+        <span>總計</span>
+        <span id="cartTotal">NT$0</span>
+    </div>
+
+    <button class="checkout-btn" onclick="goCheckout()">
+        前往結帳
+    </button>
+
+</div>
+
+
+<!-- 結帳 -->
+
+<section class="checkout-section" id="checkout">
+
+    <div class="checkout-box">
+
+        <div class="section-title">
+            <span>CHECKOUT</span>
+            <h2>確認訂單</h2>
+        </div>
+
+        <h3>桌號</h3>
+        <p id="checkoutTable"></p>
+
+        <div class="order-summary" id="checkoutSummary"></div>
+
+        <h3>付款方式</h3>
+
+        <label class="payment-option">
+            <input type="radio"
+                   name="payment"
+                   value="櫃檯付款"
+                   checked>
+            💵 櫃檯付款
+        </label>
+
+        <label class="payment-option">
+            <input type="radio"
+                   name="payment"
+                   value="信用卡">
+            💳 信用卡
+        </label>
+
+        <label class="payment-option">
+            <input type="radio"
+                   name="payment"
+                   value="LINE Pay">
+            📱 LINE Pay
+        </label>
+
+
+        <br>
+
+        <h3>訂單備註</h3>
+
+        <textarea id="note"
+                  placeholder="例如：餐點一起上、需要兩份餐具..."></textarea>
+
+        <button class="checkout-btn" onclick="submitOrder()">
+            送出訂單
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- 訂單完成 -->
+
+<section class="success-section" id="success">
+
+    <div class="success-box">
+
+        <div class="checkmark">✓</div>
+
+        <h2>訂單已送出</h2>
+
+        <p>我們正在為您準備餐點</p>
+
+        <div class="success-detail" id="successDetail"></div>
+
+        <button class="main-button" onclick="backHome()">
+            返回首頁
+        </button>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    /* =========================
+       商品資料
+    ========================= */
+
+    const products = [
+
+        {
+            id:1,
+            name:"經典美式",
+            category:"咖啡",
+            price:65,
+            description:"香醇 Espresso 與純淨熱水的經典組合",
+            image:"https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80",
+            drink:true,
+            recommend:false
+        },
+
+        {
+            id:2,
+            name:"經典拿鐵",
+            category:"咖啡",
+            price:80,
+            description:"濃郁 Espresso 搭配滑順鮮奶",
+            image:"https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&w=800&q=80",
+            drink:true,
+            recommend:true
+        },
+
+        {
+            id:3,
+            name:"卡布奇諾",
+            category:"咖啡",
+            price:85,
+            description:"Espresso、牛奶與綿密奶泡",
+            image:"https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=800&q=80",
+            drink:true,
+            recommend:false
+        },
+
+        {
+            id:4,
+            name:"海鹽焦糖拿鐵",
+            category:"咖啡",
+            price:95,
+            description:"焦糖甜香與淡淡海鹽交織",
+            image:"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=800&q=80",
+            drink:true,
+            recommend:true
+        },
+
+        {
+            id:5,
+            name:"摩卡咖啡",
+            category:"咖啡",
+            price:90,
+            description:"咖啡與巧克力的濃郁融合",
+            image:"https://images.unsplash.com/photo-1578374173705-969cbe6f2d6b?auto=format&fit=crop&w=800&q=80",
+            drink:true,
+            recommend:false
+        },
+
+        {
+            id:6,
+            name:"抹茶歐蕾",
+            category:"非咖啡",
+            price:90,
+            description:"日式抹茶與鮮奶的柔和組合",
+            image:"https://images.unsplash.com/photo-1515823064-d6e0c04616a7?auto=format&fit=crop&w=800&q=80",
+            drink:true,
+            recommend:false
+        },
+
+        {
+            id:7,
+            name:"可可歐蕾",
+            category:"非咖啡",
+            price:85,
+            description:"濃郁可可搭配香醇鮮奶",
+            image:"https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=800&q=80",
+            drink:true,
+            recommend:false
+        },
+
+        {
+            id:8,
+            name:"伯爵鮮奶茶",
+            category:"茶飲",
+            price:80,
+            description:"佛手柑香氣與鮮奶融合",
+            image:"https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80",
+            drink:true,
+            recommend:false
+        },
+
+        {
+            id:9,
+            name:"巴斯克乳酪蛋糕",
+            category:"甜點",
+            price:90,
+            description:"焦香外層與濃郁滑順乳酪",
+            image:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80",
+            drink:false,
+            recommend:true
+        },
+
+        {
+            id:10,
+            name:"提拉米蘇",
+            category:"甜點",
+            price:95,
+            description:"咖啡香氣與 Mascarpone 奶香",
+            image:"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=800&q=80",
+            drink:false,
+            recommend:false
+        },
+
+        {
+            id:11,
+            name:"火腿起司三明治",
+            category:"輕食",
+            price:100,
+            description:"火腿、起司與烘烤吐司",
+            image:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80",
+            drink:false,
+            recommend:false
+        },
+
+        {
+            id:12,
+            name:"雞肉可頌",
+            category:"輕食",
+            price:110,
+            description:"酥脆可頌搭配嫩雞肉與生菜",
+            image:"https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&w=800&q=80",
+            drink:false,
+            recommend:true
+        }
+
+    ];
+
+
+    let cart = [];
+
+    let currentProduct = null;
+
+
+    /* =========================
+       取得網址桌號
+    ========================= */
+
+    const params = new URLSearchParams(window.location.search);
+
+    let table = params.get("table");
+
+    if(!table){
+        table = "A01";
+    }
+
+    document.getElementById("headerTable").textContent = table;
+    document.getElementById("heroTable").textContent = table;
+    document.getElementById("checkoutTable").textContent = table;
+
+
+    /* =========================
+       顯示商品
+    ========================= */
+
+    function displayProducts(list){
+
+        const grid = document.getElementById("menuGrid");
+
+        grid.innerHTML = "";
+
+        list.forEach(product => {
+
+            grid.innerHTML += createCard(product);
+
+        });
+
+    }
+
+
+    function displayRecommend(){
+
+        const grid = document.getElementById("recommendGrid");
+
+        const recommend = products.filter(p => p.recommend);
+
+        recommend.forEach(product => {
+
+            grid.innerHTML += createCard(product);
+
+        });
+
+    }
+
+
+    function createCard(product){
+
+        return `
+            <div class="product-card">
+
+                <img src="${product.image}">
+
+                <div class="product-info">
+
+                    <h3>${product.name}</h3>
+
+                    <p>${product.description}</p>
+
+                    <div class="product-bottom">
+
+                        <span class="price">
+                            NT$${product.price}
+                        </span>
+
+                        <button class="add-button"
+                                onclick="openProduct(${product.id})">
+                            加入
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+    }
+
+
+    /* =========================
+       商品分類
+    ========================= */
+
+    function filterMenu(category, button){
+
+        document.querySelectorAll(".category-btn")
+        .forEach(btn => btn.classList.remove("active"));
+
+        button.classList.add("active");
+
+
+        if(category === "全部"){
+
+            displayProducts(products);
+
+        }else{
+
+            const filtered =
+            products.filter(p => p.category === category);
+
+            displayProducts(filtered);
+
+        }
+
+    }
+
+
+    /* =========================
+       開啟商品
+    ========================= */
+
+    function openProduct(id){
+
+        currentProduct =
+        products.find(p => p.id === id);
+
+
+        document.getElementById("modalName").textContent =
+        currentProduct.name;
+
+
+        document.getElementById("modalPrice").textContent =
+        "NT$" + currentProduct.price;
+
+
+        const options =
+        document.getElementById("drinkOptions");
+
+
+        if(currentProduct.drink){
+
+            options.style.display = "block";
+
+        }else{
+
+            options.style.display = "none";
+
+        }
+
+
+        resetOptions();
+
+        document.getElementById("productModal")
+        .classList.add("show");
+
+    }
+
+
+    function closeModal(){
+
+        document.getElementById("productModal")
+        .classList.remove("show");
+
+    }
+
+
+    /* =========================
+       客製化按鈕
+    ========================= */
+
+    document.querySelectorAll(".option")
+    .forEach(button => {
+
+        button.addEventListener("click", function(){
+
+            const group =
+            this.dataset.group;
+
+
+            document.querySelectorAll(
+                `[data-group="${group}"]`
+            ).forEach(btn => {
+
+                btn.classList.remove("selected");
+
+            });
+
+
+            this.classList.add("selected");
+
+        });
+
+    });
+
+
+    function resetOptions(){
+
+        ["size","temp","sugar","ice","extra"]
+        .forEach(group => {
+
+            const buttons =
+            document.querySelectorAll(
+                `[data-group="${group}"]`
+            );
+
+            buttons.forEach(btn =>
+                btn.classList.remove("selected")
+            );
+
+            if(buttons.length > 0){
+                buttons[0].classList.add("selected");
+            }
+
+        });
+
+    }
+
+
+    /* =========================
+       加入購物車
+    ========================= */
+
+    function addToCart(){
+
+        let price = currentProduct.price;
+
+        let optionsText = "";
+
+
+        if(currentProduct.drink){
+
+            const selected =
+            document.querySelectorAll(
+                ".option.selected"
+            );
+
+
+            let values = [];
+
+
+            selected.forEach(option => {
+
+                values.push(option.dataset.value);
+
+                if(option.dataset.price){
+
+                    price +=
+                    Number(option.dataset.price);
+
+                }
+
+            });
+
+
+            optionsText = values.join("・");
+
+        }
+
+
+        cart.push({
+
+            name: currentProduct.name,
+
+            price: price,
+
+            options: optionsText,
+
+            quantity: 1
+
+        });
+
+
+        updateCart();
+
+        closeModal();
+
+    }
+
+
+    /* =========================
+       更新購物車
+    ========================= */
+
+    function updateCart(){
+
+        const container =
+        document.getElementById("cartItems");
+
+        container.innerHTML = "";
+
+
+        let total = 0;
+        let count = 0;
+
+
+        cart.forEach((item,index) => {
+
+            total += item.price * item.quantity;
+
+            count += item.quantity;
+
+
+            container.innerHTML += `
+
+                <div class="cart-item">
+
+                    <div class="cart-item-top">
+
+                        <strong>
+                            ${item.name}
+                        </strong>
+
+                        <strong>
+                            NT$${item.price * item.quantity}
+                        </strong>
+
+                    </div>
+
+                    <div class="cart-options">
+                        ${item.options}
+                    </div>
+
+                    <div class="quantity">
+
+                        <button onclick="changeQuantity(${index},-1)">
+                            −
+                        </button>
+
+                        <span>
+                            ${item.quantity}
+                        </span>
+
+                        <button onclick="changeQuantity(${index},1)">
+                            ＋
+                        </button>
+
+                        <button class="delete"
+                                onclick="deleteItem(${index})">
+                            刪除
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        });
+
+
+        document.getElementById("cartTotal")
+        .textContent = "NT$" + total;
+
+
+        document.getElementById("cartCount")
+        .textContent = count;
+
+    }
+
+
+    function changeQuantity(index,amount){
+
+        cart[index].quantity += amount;
+
+
+        if(cart[index].quantity <= 0){
+
+            cart.splice(index,1);
+
+        }
+
+
+        updateCart();
+
+    }
+
+
+    function deleteItem(index){
+
+        cart.splice(index,1);
+
+        updateCart();
+
+    }
+
+
+    /* =========================
+       購物車開關
+    ========================= */
+
+    function openCart(){
+
+        document.getElementById("cartPanel")
+        .classList.add("show");
+
+    }
+
+
+    function closeCart(){
+
+        document.getElementById("cartPanel")
+        .classList.remove("show");
+
+    }
+
+
+    /* =========================
+       前往結帳
+    ========================= */
+
+    function goCheckout(){
+
+        if(cart.length === 0){
+
+            alert("購物車目前是空的");
+
+            return;
+
+        }
+
+
+        closeCart();
+
+
+        document.getElementById("home").style.display = "none";
+        document.getElementById("recommend").style.display = "none";
+        document.getElementById("menu").style.display = "none";
+
+
+        document.getElementById("checkout")
+        .style.display = "block";
+
+
+        let html = "";
+
+        let total = 0;
+
+
+        cart.forEach(item => {
+
+            const subtotal =
+            item.price * item.quantity;
+
+            total += subtotal;
+
+
+            html += `
+
+                <p>
+                    ${item.name}
+                    × ${item.quantity}
+
+                    <span style="float:right">
+                        NT$${subtotal}
+                    </span>
+                </p>
+
+            `;
+
+        });
+
+
+        html += `
+
+            <hr style="margin:15px 0">
+
+            <h3>
+                總計
+
+                <span style="float:right">
+                    NT$${total}
+                </span>
+            </h3>
+
+        `;
+
+
+        document.getElementById("checkoutSummary")
+        .innerHTML = html;
+
+
+        window.scrollTo(0,0);
+
+    }
+
+
+    /* =========================
+       送出訂單
+    ========================= */
+
+    function submitOrder(){
+
+        const payment =
+        document.querySelector(
+            'input[name="payment"]:checked'
+        ).value;
+
+
+        const note =
+        document.getElementById("note").value;
+
+
+        const orderNumber =
+        table +
+        Math.floor(100 + Math.random()*900);
+
+
+        const now = new Date();
+
+
+        const time =
+        now.getHours().toString().padStart(2,"0")
+        +
+        ":"
+        +
+        now.getMinutes().toString().padStart(2,"0");
+
+
+        let total = 0;
+
+        let itemHTML = "";
+
+
+        cart.forEach(item => {
+
+            const subtotal =
+            item.price * item.quantity;
+
+            total += subtotal;
+
+
+            itemHTML += `
+
+                <div>
+
+                    ${item.name}
+                    × ${item.quantity}
+
+                    <span style="float:right">
+                        NT$${subtotal}
+                    </span>
+
+                </div>
+
+            `;
+
+        });
+
+
+        document.getElementById("checkout")
+        .style.display = "none";
+
+
+        document.getElementById("success")
+        .style.display = "block";
+
+
+        document.getElementById("successDetail")
+        .innerHTML = `
+
+            <strong>訂單編號：</strong>
+            #${orderNumber}
+
+            <br>
+
+            <strong>桌號：</strong>
+            ${table}
+
+            <br>
+
+            <strong>付款方式：</strong>
+            ${payment}
+
+            <br>
+
+            <strong>訂單時間：</strong>
+            ${time}
+
+            <hr style="margin:15px 0">
+
+            ${itemHTML}
+
+            <hr style="margin:15px 0">
+
+            <strong>
+                總計
+                <span style="float:right">
+                    NT$${total}
+                </span>
+            </strong>
+
+            <br>
+
+            <strong>備註：</strong>
+            ${note || "無"}
+
+        `;
+
+
+        window.scrollTo(0,0);
+
+    }
+
+
+    /* =========================
+       回首頁
+    ========================= */
+
+    function backHome(){
+
+        cart = [];
+
+        updateCart();
+
+
+        document.getElementById("success")
+        .style.display = "none";
+
+
+        document.getElementById("home")
+        .style.display = "flex";
+
+
+        document.getElementById("recommend")
+        .style.display = "block";
+
+
+        document.getElementById("menu")
+        .style.display = "block";
+
+
+        document.getElementById("note").value = "";
+
+
+        window.scrollTo(0,0);
+
+    }
+
+
+    /* =========================
+       開始點餐
+    ========================= */
+
+    function goMenu(){
+
+        document.getElementById("menu")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+    }
+
+
+    /* =========================
+       網頁開始執行
+    ========================= */
+
+    displayProducts(products);
+
+    displayRecommend();
+
+</script>
+
+</body>
+</html>
